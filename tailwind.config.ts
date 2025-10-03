@@ -57,6 +57,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "glow-cyan": "hsl(var(--glow-cyan))",
+        "glow-purple": "hsl(var(--glow-purple))",
+        "space-deep": "hsl(var(--space-deep))",
+        "space-light": "hsl(var(--space-light))",
+      },
+      backgroundImage: {
+        'space-gradient': 'linear-gradient(135deg, hsl(var(--space-deep)) 0%, hsl(var(--background)) 50%, hsl(var(--space-light)) 100%)',
+        'glow-gradient': 'linear-gradient(135deg, hsl(var(--glow-cyan)) 0%, hsl(var(--glow-purple)) 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",
