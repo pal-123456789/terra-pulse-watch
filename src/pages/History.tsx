@@ -1,60 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight, AlertTriangle, Wind, Flame, Mountain, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
-
-const anomalies = [
-  {
-    id: 1,
-    name: "Hurricane Katrina",
-    icon: Wind,
-    year: "2005",
-    location: "New Orleans, USA",
-    description: "Category 5 Atlantic hurricane that caused catastrophic damage along the Gulf coast",
-    severity: "Extreme",
-  },
-  {
-    id: 2,
-    name: "Chernobyl Disaster",
-    icon: Flame,
-    year: "1986",
-    location: "Pripyat, Ukraine",
-    description: "Nuclear accident that released large quantities of radioactive particles",
-    severity: "Critical",
-  },
-  {
-    id: 3,
-    name: "Tunguska Event",
-    icon: AlertTriangle,
-    year: "1908",
-    location: "Siberia, Russia",
-    description: "Large explosion that flattened 2,000 square kilometers of forest",
-    severity: "High",
-  },
-  {
-    id: 4,
-    name: "Mount Everest Anomaly",
-    icon: Mountain,
-    year: "2015",
-    location: "Himalayas, Nepal",
-    description: "Unusual seismic activity detected in the region",
-    severity: "Medium",
-  },
-  {
-    id: 5,
-    name: "Bermuda Triangle Disappearance",
-    icon: HelpCircle,
-    year: "Various",
-    location: "Atlantic Ocean",
-    description: "Multiple unexplained disappearances of ships and aircraft",
-    severity: "Unknown",
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const History = () => {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAnomalies();
+  }, []);
+
+  const fetchAnomalies = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("anomalies")
+        .select("*")
+        .order("detected_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("Error fetching anomalies:", error);
+        return;
+      }
+
+      // Combine database anomalies with historical ones
+      const historicalAnomalies = [
+        {
+          id: "hist-1",
+          name: "Hurricane Katrina",
+          description: "Category 5 Atlantic hurricane that caused catastrophic damage along the Gulf coast",
+          latitude: 29.9511,
+          longitude: -90.0715,
+          anomaly_type: "weather",
+          severity: "extreme",
+          detected_at: "2005-08-29T00:00:00Z",
+          status: "resolved",
+        },
+        {
+          id: "hist-2",
+          name: "Chernobyl Disaster",
+          description: "Nuclear accident that released large quantities of radioactive particles",
+          latitude: 51.3891,
+          longitude: 30.0987,
+          anomaly_type: "nuclear",
+          severity: "critical",
+          detected_at: "1986-04-26T00:00:00Z",
+          status: "resolved",
+        },
+        {
+          id: "hist-3",
+          name: "Tunguska Event",
+          description: "Large explosion that flattened 2,000 square kilometers of forest",
+          latitude: 60.8869,
+          longitude: 101.8939,
+          anomaly_type: "unexplained",
+          severity: "high",
+          detected_at: "1908-06-30T00:00:00Z",
+          status: "resolved",
+        },
+      ];
+
+      setAnomalies([...historicalAnomalies, ...(data || [])]);
+    } catch (error) {
+      console.error("Error fetching anomalies:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getIconForType = (type: string) => {
+    switch (type.toLowerCase()) {
+      case "weather":
+        return Wind;
+      case "nuclear":
+        return Flame;
+      case "seismic":
+        return Mountain;
+      default:
+        return AlertTriangle;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-space-gradient">
@@ -91,61 +130,87 @@ const History = () => {
 
             {/* Anomalies List */}
             <div className="lg:col-span-3 space-y-4">
-              {anomalies.map((anomaly) => {
-                const Icon = anomaly.icon;
-                const isExpanded = expandedId === anomaly.id;
+              {loading ? (
+                <Card className="glass-panel p-8 text-center">
+                  <p className="text-muted-foreground">Loading anomalies...</p>
+                </Card>
+              ) : anomalies.length === 0 ? (
+                <Card className="glass-panel p-8 text-center">
+                  <p className="text-muted-foreground">No anomalies found</p>
+                </Card>
+              ) : (
+                anomalies
+                  .filter((anomaly) =>
+                    selectedCategory === "all" ||
+                    anomaly.anomaly_type.toLowerCase() === selectedCategory
+                  )
+                  .map((anomaly) => {
+                    const Icon = getIconForType(anomaly.anomaly_type);
+                    const isExpanded = expandedId === anomaly.id;
 
-                return (
-                  <Card
-                    key={anomaly.id}
-                    className="glass-panel p-6 hover:glow-border transition-all duration-300 cursor-pointer"
-                    onClick={() => setExpandedId(isExpanded ? null : anomaly.id)}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-6 h-6 text-primary" />
-                      </div>
+                    return (
+                      <Card
+                        key={anomaly.id}
+                        className="glass-panel p-6 hover:glow-border transition-all duration-300 cursor-pointer"
+                        onClick={() => setExpandedId(isExpanded ? null : anomaly.id)}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Icon className="w-6 h-6 text-primary" />
+                          </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-xl font-bold text-foreground">{anomaly.name}</h3>
-                          {isExpanded ? (
-                            <ChevronDown className="w-5 h-5 text-primary" />
-                          ) : (
-                            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-xl font-bold text-foreground">{anomaly.name}</h3>
+                              {isExpanded ? (
+                                <ChevronDown className="w-5 h-5 text-primary" />
+                              ) : (
+                                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                              )}
+                            </div>
+
+                            <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-2">
+                              <span className="flex items-center gap-1">
+                                📅 {formatDate(anomaly.detected_at)}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                📍 {anomaly.latitude.toFixed(2)}, {anomaly.longitude.toFixed(2)}
+                              </span>
+                              <span
+                                className={`px-2 py-1 rounded ${
+                                  anomaly.severity === "extreme"
+                                    ? "bg-red-500/20 text-red-400"
+                                    : anomaly.severity === "critical"
+                                    ? "bg-orange-500/20 text-orange-400"
+                                    : anomaly.severity === "high"
+                                    ? "bg-yellow-500/20 text-yellow-400"
+                                    : "bg-blue-500/20 text-blue-400"
+                                }`}
+                              >
+                                {anomaly.severity}
+                              </span>
+                              <span className="px-2 py-1 rounded bg-muted/50 text-muted-foreground">
+                                {anomaly.status}
+                              </span>
+                            </div>
+
+                            {isExpanded && (
+                              <div className="mt-4 space-y-2">
+                                <p className="text-muted-foreground">{anomaly.description}</p>
+                                {anomaly.metadata?.recommendation && (
+                                  <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                                    <p className="text-sm font-semibold text-foreground">Recommendation:</p>
+                                    <p className="text-sm text-muted-foreground">{anomaly.metadata.recommendation}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
-
-                        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-2">
-                          <span className="flex items-center gap-1">
-                            📅 {anomaly.year}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            📍 {anomaly.location}
-                          </span>
-                          <span
-                            className={`px-2 py-1 rounded ${
-                              anomaly.severity === "Extreme"
-                                ? "bg-red-500/20 text-red-400"
-                                : anomaly.severity === "Critical"
-                                ? "bg-orange-500/20 text-orange-400"
-                                : anomaly.severity === "High"
-                                ? "bg-yellow-500/20 text-yellow-400"
-                                : "bg-blue-500/20 text-blue-400"
-                            }`}
-                          >
-                            {anomaly.severity}
-                          </span>
-                        </div>
-
-                        {isExpanded && (
-                          <p className="mt-4 text-muted-foreground">{anomaly.description}</p>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
+                      </Card>
+                    );
+                  })
+              )}
             </div>
           </div>
         </div>

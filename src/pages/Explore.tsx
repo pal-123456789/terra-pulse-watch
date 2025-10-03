@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
-import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye } from "lucide-react";
+import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
 
 const Explore = () => {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [detectionResult, setDetectionResult] = useState<any>(null);
+  const [predictionResult, setPredictionResult] = useState<any>(null);
 
   useEffect(() => {
     requestLocation();
@@ -40,28 +44,109 @@ const Explore = () => {
 
   const fetchWeatherData = async (coords: { lat: number; lon: number }) => {
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=db762d54fef72d47495b6b7613e0d1c8&units=metric`
-      );
-      const data = await response.json();
-      setWeatherData(data);
+      // Call our edge function to fetch and store environmental data
+      const { data, error } = await supabase.functions.invoke('fetch-environmental-data', {
+        body: { latitude: coords.lat, longitude: coords.lon }
+      });
+
+      if (error) {
+        console.error("Error fetching environmental data:", error);
+        toast.error("Failed to fetch environmental data");
+        return;
+      }
+
+      setWeatherData(data.weather);
+      toast.success("Environmental data fetched successfully");
     } catch (error) {
       console.error("Error fetching weather data:", error);
+      toast.error("Failed to fetch environmental data");
     }
   };
 
-  const handleDetection = () => {
-    toast.info("Running anomaly detection...");
-    setTimeout(() => {
-      toast.success("Detection complete: No immediate anomalies detected");
-    }, 2000);
+  const handleDetection = async () => {
+    if (!location || !weatherData) {
+      toast.error("Please enable location and wait for data to load");
+      return;
+    }
+
+    setAnalysisLoading(true);
+    setDetectionResult(null);
+    toast.info("Running AI anomaly detection...");
+
+    try {
+      const { data, error } = await supabase.functions.invoke('detect-anomalies', {
+        body: {
+          latitude: location.lat,
+          longitude: location.lon,
+          weatherData: {
+            temperature: weatherData.main?.temp,
+            humidity: weatherData.main?.humidity,
+            pressure: weatherData.main?.pressure,
+            wind_speed: weatherData.wind?.speed,
+            weather_condition: weatherData.weather?.[0]?.description
+          }
+        }
+      });
+
+      if (error) {
+        console.error("Detection error:", error);
+        toast.error("Failed to run anomaly detection");
+        return;
+      }
+
+      setDetectionResult(data);
+      
+      if (data.hasAnomaly) {
+        toast.error(`Anomaly detected: ${data.severity} severity`);
+      } else {
+        toast.success("No anomalies detected");
+      }
+    } catch (error) {
+      console.error("Detection error:", error);
+      toast.error("Failed to run anomaly detection");
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
 
-  const handlePrediction = () => {
-    toast.info("Analyzing prediction models...");
-    setTimeout(() => {
-      toast.success("Forecast: Normal conditions expected for next 24 hours");
-    }, 2000);
+  const handlePrediction = async () => {
+    if (!location || !weatherData) {
+      toast.error("Please enable location and wait for data to load");
+      return;
+    }
+
+    setAnalysisLoading(true);
+    setPredictionResult(null);
+    toast.info("Running AI prediction analysis...");
+
+    try {
+      const { data, error } = await supabase.functions.invoke('predict-conditions', {
+        body: {
+          latitude: location.lat,
+          longitude: location.lon,
+          weatherData: {
+            temperature: weatherData.main?.temp,
+            humidity: weatherData.main?.humidity,
+            pressure: weatherData.main?.pressure,
+            wind_speed: weatherData.wind?.speed
+          }
+        }
+      });
+
+      if (error) {
+        console.error("Prediction error:", error);
+        toast.error("Failed to run prediction");
+        return;
+      }
+
+      setPredictionResult(data);
+      toast.success(`Forecast: ${data.riskLevel} risk level`);
+    } catch (error) {
+      console.error("Prediction error:", error);
+      toast.error("Failed to run prediction");
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
 
   return (
@@ -114,9 +199,10 @@ const Explore = () => {
                           onClick={handleDetection}
                           size="lg"
                           className="glow-border"
+                          disabled={!weatherData || analysisLoading}
                         >
                           <Activity className="w-5 h-5 mr-2" />
-                          Detection
+                          {analysisLoading ? "Analyzing..." : "Detection"}
                         </Button>
                         
                         <Button
@@ -124,6 +210,7 @@ const Explore = () => {
                           size="lg"
                           variant="outline"
                           className="border-primary/30"
+                          disabled={!weatherData || analysisLoading}
                         >
                           <TrendingUp className="w-5 h-5 mr-2" />
                           Prediction
@@ -183,21 +270,94 @@ const Explore = () => {
 
               <Card className="glass-panel p-6">
                 <h3 className="text-lg font-bold mb-4 text-foreground">Anomaly Status</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Detection Level</span>
-                    <span className="text-sm font-bold text-green-400">Normal</span>
+                
+                {detectionResult ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className={`w-5 h-5 ${
+                        detectionResult.hasAnomaly ? 'text-red-400' : 'text-green-400'
+                      }`} />
+                      <span className="font-bold text-foreground">
+                        {detectionResult.hasAnomaly ? 'Anomaly Detected' : 'All Clear'}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Severity</span>
+                        <span className={`text-sm font-bold ${
+                          detectionResult.severity === 'extreme' ? 'text-red-400' :
+                          detectionResult.severity === 'high' ? 'text-orange-400' :
+                          detectionResult.severity === 'medium' ? 'text-yellow-400' :
+                          'text-green-400'
+                        }`}>{detectionResult.severity}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Type</span>
+                        <span className="text-sm font-bold text-foreground">{detectionResult.anomalyType}</span>
+                      </div>
+                      <div className="p-3 bg-card/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">{detectionResult.description}</p>
+                      </div>
+                      {detectionResult.recommendation && (
+                        <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                          <p className="text-sm text-foreground">{detectionResult.recommendation}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Risk Assessment</span>
-                    <span className="text-sm font-bold text-green-400">Low</span>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Detection Level</span>
+                      <span className="text-sm font-bold text-green-400">Normal</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Risk Assessment</span>
+                      <span className="text-sm font-bold text-green-400">Low</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Last Updated</span>
+                      <span className="text-sm font-bold text-foreground">
+                        {weatherData ? 'Just now' : 'Waiting for data...'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Last Updated</span>
-                    <span className="text-sm font-bold text-foreground">Just now</span>
-                  </div>
-                </div>
+                )}
               </Card>
+
+              {predictionResult && (
+                <Card className="glass-panel p-6">
+                  <h3 className="text-lg font-bold mb-4 text-foreground">Prediction</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Risk Level</span>
+                      <span className={`text-sm font-bold ${
+                        predictionResult.riskLevel === 'extreme' ? 'text-red-400' :
+                        predictionResult.riskLevel === 'high' ? 'text-orange-400' :
+                        predictionResult.riskLevel === 'medium' ? 'text-yellow-400' :
+                        'text-green-400'
+                      }`}>{predictionResult.riskLevel}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Confidence</span>
+                      <span className="text-sm font-bold text-foreground">{predictionResult.confidence}%</span>
+                    </div>
+                    <div className="p-3 bg-card/50 rounded-lg">
+                      <p className="text-sm text-muted-foreground">{predictionResult.forecast}</p>
+                    </div>
+                    {predictionResult.warnings && predictionResult.warnings.length > 0 && (
+                      <div className="p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                        <ul className="text-sm text-foreground space-y-1">
+                          {predictionResult.warnings.map((warning: string, idx: number) => (
+                            <li key={idx}>• {warning}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </div>
