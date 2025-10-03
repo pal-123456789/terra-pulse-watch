@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      anomalies: {
+        Row: {
+          anomaly_type: string
+          description: string | null
+          detected_at: string
+          id: string
+          latitude: number
+          longitude: number
+          metadata: Json | null
+          name: string
+          severity: string
+          status: string
+        }
+        Insert: {
+          anomaly_type: string
+          description?: string | null
+          detected_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          metadata?: Json | null
+          name: string
+          severity: string
+          status?: string
+        }
+        Update: {
+          anomaly_type?: string
+          description?: string | null
+          detected_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          metadata?: Json | null
+          name?: string
+          severity?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      environmental_data: {
+        Row: {
+          created_at: string
+          data_source: string
+          humidity: number | null
+          id: string
+          latitude: number
+          longitude: number
+          pressure: number | null
+          temperature: number | null
+          weather_condition: string | null
+          wind_speed: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_source: string
+          humidity?: number | null
+          id?: string
+          latitude: number
+          longitude: number
+          pressure?: number | null
+          temperature?: number | null
+          weather_condition?: string | null
+          wind_speed?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_source?: string
+          humidity?: number | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          pressure?: number | null
+          temperature?: number | null
+          weather_condition?: string | null
+          wind_speed?: number | null
+        }
+        Relationships: []
+      }
+      predictions: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          forecast_data: Json | null
+          id: string
+          latitude: number
+          longitude: number
+          prediction_type: string
+          risk_level: string
+          valid_until: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          forecast_data?: Json | null
+          id?: string
+          latitude: number
+          longitude: number
+          prediction_type: string
+          risk_level: string
+          valid_until: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          forecast_data?: Json | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          prediction_type?: string
+          risk_level?: string
+          valid_until?: string
+        }
+        Relationships: []
+      }
+      user_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          latitude: number
+          longitude: number
+          report_type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          latitude: number
+          longitude: number
+          report_type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          latitude?: number
+          longitude?: number
+          report_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
