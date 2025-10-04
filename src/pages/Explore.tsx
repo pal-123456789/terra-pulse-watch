@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye, AlertTriangle } from "lucide-react";
+import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye, AlertTriangle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 const Explore = () => {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string>("");
   const [weatherData, setWeatherData] = useState<any>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [detectionResult, setDetectionResult] = useState<any>(null);
@@ -21,6 +23,17 @@ const Explore = () => {
   const requestLocation = () => {
     if ("geolocation" in navigator) {
       setLoading(true);
+      setLocationError("");
+      
+      toast.info("Requesting location access...", { duration: 2000 });
+      
+      // Set a longer timeout (30 seconds) for location acquisition
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 30000, // 30 seconds
+        maximumAge: 0
+      };
+      
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const coords = {
@@ -28,17 +41,40 @@ const Explore = () => {
             lon: position.coords.longitude,
           };
           setLocation(coords);
+          setLocationError("");
           fetchWeatherData(coords);
           toast.success("Location acquired successfully");
           setLoading(false);
         },
         (error) => {
-          toast.error("Unable to get your location");
           setLoading(false);
-        }
+          let errorMessage = "";
+          
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "Location access denied. Please enable location permissions in your device settings and refresh the page.";
+              toast.error("Location permission denied", { duration: 5000 });
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Location information is unavailable. Please check your device's location settings.";
+              toast.error("Location unavailable", { duration: 5000 });
+              break;
+            case error.TIMEOUT:
+              errorMessage = "Location request timed out. This may happen if GPS signal is weak. Please try again or enable high-accuracy mode in your device settings.";
+              toast.error("Location timeout - Try again", { duration: 5000 });
+              break;
+            default:
+              errorMessage = "Unable to get your location. Please check your device settings.";
+              toast.error("Location error", { duration: 5000 });
+          }
+          
+          setLocationError(errorMessage);
+        },
+        options
       );
     } else {
       toast.error("Geolocation is not supported by your browser");
+      setLocationError("Your browser doesn't support location services.");
     }
   };
 
@@ -162,6 +198,39 @@ const Explore = () => {
             <p className="text-muted-foreground">Real-time environmental monitoring and analysis</p>
           </div>
 
+          {/* Location Instructions Alert */}
+          {locationError && (
+            <Alert className="mb-6 border-orange-500/50 bg-orange-500/10">
+              <Info className="h-4 w-4 text-orange-500" />
+              <AlertDescription className="text-foreground">
+                {locationError}
+                <div className="mt-2 text-sm">
+                  <strong>To enable location:</strong>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>On mobile: Go to Settings → Privacy → Location Services</li>
+                    <li>On browser: Click the location icon in the address bar and allow access</li>
+                    <li>Make sure GPS/Location is enabled on your device</li>
+                  </ul>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {loading && !location && (
+            <Alert className="mb-6 border-primary/50 bg-primary/10">
+              <Info className="h-4 w-4 text-primary animate-pulse" />
+              <AlertDescription className="text-foreground">
+                <strong>Acquiring your location...</strong>
+                <p className="mt-1 text-sm">This may take up to 30 seconds. Please ensure:</p>
+                <ul className="list-disc list-inside mt-1 space-y-1 text-sm">
+                  <li>Location/GPS is enabled on your device</li>
+                  <li>You've granted location permission to your browser</li>
+                  <li>You have a clear view of the sky if using GPS</li>
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Globe Visualization */}
             <div className="lg:col-span-2">
@@ -171,17 +240,22 @@ const Explore = () => {
                 <div className="relative z-10 h-full flex flex-col">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-primary" />
+                      <MapPin className={`w-5 h-5 ${location ? 'text-primary' : 'text-muted-foreground'}`} />
                       <span className="text-sm text-muted-foreground">
                         {location
                           ? `${location.lat.toFixed(2)}, ${location.lon.toFixed(2)}`
-                          : "Location not available"}
+                          : loading ? "Acquiring location..." : "Location not available"}
                       </span>
                     </div>
                     
                     {!location && (
-                      <Button onClick={requestLocation} size="sm" disabled={loading}>
-                        {loading ? "Getting Location..." : "Enable Location"}
+                      <Button 
+                        onClick={requestLocation} 
+                        size="sm" 
+                        disabled={loading}
+                        className={loading ? "animate-pulse" : ""}
+                      >
+                        {loading ? "Getting Location..." : locationError ? "Retry Location" : "Enable Location"}
                       </Button>
                     )}
                   </div>
