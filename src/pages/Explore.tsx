@@ -12,6 +12,7 @@ const Explore = () => {
   const [loading, setLoading] = useState(false);
   const [locationError, setLocationError] = useState<string>("");
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [dataLoading, setDataLoading] = useState(false);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [detectionResult, setDetectionResult] = useState<any>(null);
   const [predictionResult, setPredictionResult] = useState<any>(null);
@@ -79,6 +80,7 @@ const Explore = () => {
   };
 
   const fetchWeatherData = async (coords: { lat: number; lon: number }) => {
+    setDataLoading(true);
     try {
       // Call our edge function to fetch and store environmental data
       const { data, error } = await supabase.functions.invoke('fetch-environmental-data', {
@@ -88,6 +90,7 @@ const Explore = () => {
       if (error) {
         console.error("Error fetching environmental data:", error);
         toast.error("Failed to fetch environmental data");
+        setDataLoading(false);
         return;
       }
 
@@ -96,6 +99,8 @@ const Explore = () => {
     } catch (error) {
       console.error("Error fetching weather data:", error);
       toast.error("Failed to fetch environmental data");
+    } finally {
+      setDataLoading(false);
     }
   };
 
@@ -228,6 +233,23 @@ const Explore = () => {
                   <li>You have a clear view of the sky if using GPS</li>
                 </ul>
               </AlertDescription>
+            </Alert>
+          )}
+
+          {dataLoading && (
+            <Alert className="mb-6 border-primary/50 bg-primary/10">
+              <div className="flex items-center gap-4">
+                <div className="relative w-12 h-12">
+                  <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin" 
+                       style={{ animationDuration: '1s' }} />
+                  <div className="absolute inset-2 rounded-full bg-primary/20 animate-pulse" />
+                </div>
+                <AlertDescription className="text-foreground flex-1">
+                  <strong>Fetching environmental data from NASA and weather services...</strong>
+                  <p className="mt-1 text-sm">This may take some time as we gather comprehensive data about your location.</p>
+                </AlertDescription>
+              </div>
             </Alert>
           )}
 
