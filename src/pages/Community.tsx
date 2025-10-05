@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import ActivityFeed from "@/components/ActivityFeed";
-import GlobalMap from "@/components/GlobalMap";
 
 const Community = () => {
   return (
@@ -72,13 +71,23 @@ const Community = () => {
 
           {/* Map Visualization */}
           <Card className="glass-panel p-8">
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Live Global Activity Map</h2>
-              <p className="text-muted-foreground text-sm">
-                Real-time environmental monitoring across the globe
-              </p>
+            <div className="relative h-[500px] rounded-lg overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1200')] bg-cover bg-center opacity-30" />
+              
+              <div className="relative z-10 h-full flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <div className="relative inline-block">
+                    <div className="w-32 h-32 bg-primary/20 rounded-full animate-pulse-glow flex items-center justify-center">
+                      <Users className="w-16 h-16 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground">Interactive Globe Coming Soon</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Real-time visualization of community reports and environmental data across the globe
+                  </p>
+                </div>
+              </div>
             </div>
-            <GlobalMap />
           </Card>
 
           {/* Activity Feed and Trending Locations */}
