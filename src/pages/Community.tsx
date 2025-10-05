@@ -1,6 +1,8 @@
 import { Users, TrendingUp, MapPin, Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import ActivityFeed from "@/components/ActivityFeed";
 
 const Community = () => {
   return (
@@ -25,7 +27,9 @@ const Community = () => {
                 </div>
                 <span className="text-sm text-muted-foreground">Total Reports</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">7,421,098</p>
+              <p className="text-3xl font-bold text-foreground">
+                <AnimatedCounter end={7421098} />
+              </p>
             </Card>
 
             <Card className="glass-panel p-6">
@@ -35,7 +39,9 @@ const Community = () => {
                 </div>
                 <span className="text-sm text-muted-foreground">Members Online</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">2,567</p>
+              <p className="text-3xl font-bold text-foreground">
+                <AnimatedCounter end={2567} />
+              </p>
             </Card>
 
             <Card className="glass-panel p-6">
@@ -45,7 +51,9 @@ const Community = () => {
                 </div>
                 <span className="text-sm text-muted-foreground">Active Locations</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">1,234</p>
+              <p className="text-3xl font-bold text-foreground">
+                <AnimatedCounter end={1234} />
+              </p>
             </Card>
 
             <Card className="glass-panel p-6">
@@ -55,7 +63,9 @@ const Community = () => {
                 </div>
                 <span className="text-sm text-muted-foreground">Trending Reports</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">89</p>
+              <p className="text-3xl font-bold text-foreground">
+                <AnimatedCounter end={89} />
+              </p>
             </Card>
           </div>
 
@@ -80,25 +90,31 @@ const Community = () => {
             </div>
           </Card>
 
-          {/* Trending Locations */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6 text-foreground">Trending Locations</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { name: "Amazon Rainforest", reports: 1234, status: "Active" },
-                { name: "Arctic Circle", reports: 892, status: "Monitoring" },
-                { name: "Pacific Ocean", reports: 756, status: "Active" },
-              ].map((location, idx) => (
-                <Card key={idx} className="glass-panel p-4 hover:glow-border transition-all duration-300">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-foreground">{location.name}</h3>
-                    <span className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
-                      {location.status}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{location.reports} reports</p>
-                </Card>
-              ))}
+          {/* Activity Feed and Trending Locations */}
+          <div className="mt-12 grid lg:grid-cols-2 gap-6">
+            <ActivityFeed />
+            
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">Trending Locations</h2>
+              <div className="space-y-4">
+                {[
+                  { name: "Amazon Rainforest", reports: 1234, status: "Active" },
+                  { name: "Arctic Circle", reports: 892, status: "Monitoring" },
+                  { name: "Pacific Ocean", reports: 756, status: "Active" },
+                  { name: "Sahara Desert", reports: 645, status: "Active" },
+                  { name: "Himalayas", reports: 523, status: "Monitoring" },
+                ].map((location, idx) => (
+                  <Card key={idx} className="glass-panel p-4 hover:glow-border transition-all duration-300">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-foreground">{location.name}</h3>
+                      <span className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
+                        {location.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{location.reports} reports</p>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         </div>

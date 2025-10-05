@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronRight, AlertTriangle, Wind, Flame, Mountain, HelpCircle } from "lucide-react";
+import { ChevronDown, ChevronRight, AlertTriangle, Wind, Flame, Mountain, HelpCircle, List, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
+import TimelineView from "@/components/TimelineView";
 
 const History = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [anomalies, setAnomalies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"list" | "timeline">("list");
 
   useEffect(() => {
     fetchAnomalies();
@@ -112,6 +115,26 @@ const History = () => {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <Card className="glass-panel p-6 sticky top-24">
+                <h3 className="text-lg font-bold mb-4 text-foreground">View Mode</h3>
+                <div className="space-y-2 mb-6">
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setViewMode("list")}
+                  >
+                    <List className="w-4 h-4 mr-2" />
+                    List View
+                  </Button>
+                  <Button
+                    variant={viewMode === "timeline" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setViewMode("timeline")}
+                  >
+                    <Clock className="w-4 h-4 mr-2" />
+                    Timeline
+                  </Button>
+                </div>
+                
                 <h3 className="text-lg font-bold mb-4 text-foreground">Categories</h3>
                 <div className="space-y-2">
                   {["all", "weather", "seismic", "nuclear", "unexplained"].map((category) => (
@@ -128,8 +151,26 @@ const History = () => {
               </Card>
             </div>
 
-            {/* Anomalies List */}
-            <div className="lg:col-span-3 space-y-4">
+            {/* Anomalies Content */}
+            <div className="lg:col-span-3">{viewMode === "timeline" ? (
+                loading ? (
+                  <Card className="glass-panel p-8 text-center">
+                    <p className="text-muted-foreground">Loading anomalies...</p>
+                  </Card>
+                ) : anomalies.length === 0 ? (
+                  <Card className="glass-panel p-8 text-center">
+                    <p className="text-muted-foreground">No anomalies found</p>
+                  </Card>
+                ) : (
+                  <TimelineView
+                    anomalies={anomalies.filter((anomaly) =>
+                      selectedCategory === "all" ||
+                      anomaly.anomaly_type.toLowerCase() === selectedCategory
+                    )}
+                  />
+                )
+              ) : (
+                <div className="space-y-4">
               {loading ? (
                 <Card className="glass-panel p-8 text-center">
                   <p className="text-muted-foreground">Loading anomalies...</p>
@@ -210,6 +251,8 @@ const History = () => {
                       </Card>
                     );
                   })
+              )}
+                </div>
               )}
             </div>
           </div>

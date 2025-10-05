@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const Explore = () => {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
@@ -190,6 +191,24 @@ const Explore = () => {
     }
   };
 
+  // Generate trend data for charts
+  const generateTrendData = (currentTemp: number) => {
+    return Array.from({ length: 24 }, (_, i) => ({
+      time: `${i}:00`,
+      temp: currentTemp + (Math.sin(i / 3) * 5) + (Math.random() * 2 - 1)
+    }));
+  };
+
+  const generateMetricsData = (weather: any) => {
+    return [
+      { name: 'Current', humidity: weather.main?.humidity || 0, pressure: (weather.main?.pressure || 1000) / 10 },
+      { name: '+6h', humidity: (weather.main?.humidity || 0) + 5, pressure: ((weather.main?.pressure || 1000) + 2) / 10 },
+      { name: '+12h', humidity: (weather.main?.humidity || 0) + 3, pressure: ((weather.main?.pressure || 1000) - 1) / 10 },
+      { name: '+18h', humidity: (weather.main?.humidity || 0) - 2, pressure: ((weather.main?.pressure || 1000) + 1) / 10 },
+      { name: '+24h', humidity: (weather.main?.humidity || 0) + 1, pressure: ((weather.main?.pressure || 1000) + 3) / 10 },
+    ];
+  };
+
   return (
     <div className="min-h-screen bg-space-gradient">
       <Navigation />
@@ -251,6 +270,57 @@ const Explore = () => {
                 </AlertDescription>
               </div>
             </Alert>
+          )}
+
+          {/* Data Visualizations */}
+          {weatherData && (
+            <div className="mb-6 grid md:grid-cols-2 gap-6">
+              <Card className="glass-panel p-6">
+                <h3 className="text-lg font-bold mb-4 text-foreground">Temperature Trend (24h)</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart data={generateTrendData(weatherData.main?.temp || 20)}>
+                    <defs>
+                      <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Area type="monotone" dataKey="temp" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#tempGradient)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card className="glass-panel p-6">
+                <h3 className="text-lg font-bold mb-4 text-foreground">Environmental Metrics</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={generateMetricsData(weatherData)}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                    <Line type="monotone" dataKey="humidity" stroke="hsl(180 100% 60%)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="pressure" stroke="hsl(270 70% 60%)" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
           )}
 
           <div className="grid lg:grid-cols-3 gap-6">
