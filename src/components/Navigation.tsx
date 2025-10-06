@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Globe, Compass, History, Users, Info } from "lucide-react";
+import { Globe, Compass, History, Users, Info, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
@@ -7,6 +7,7 @@ const Navigation = () => {
 
   const navItems = [
     { to: "/", label: "Home", icon: Globe },
+    { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
     { to: "/explore", label: "Explore", icon: Compass },
     { to: "/history", label: "History", icon: History },
     { to: "/community", label: "Community", icon: Users },

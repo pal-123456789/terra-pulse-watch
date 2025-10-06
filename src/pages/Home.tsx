@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Globe2, TrendingUp } from "lucide-react";
+import { ArrowRight, Zap, Globe2, TrendingUp, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import SearchBar from "@/components/SearchBar";
+import QuickActions from "@/components/QuickActions";
+import LiveNotifications from "@/components/LiveNotifications";
 
 const Home = () => {
   return (
@@ -23,8 +28,14 @@ const Home = () => {
       </div>
 
       <Navigation />
+      <LiveNotifications />
+      <QuickActions />
 
       <main className="container mx-auto px-6 pt-32 pb-20 relative z-10">
+        {/* Search Bar */}
+        <div className="mb-12">
+          <SearchBar />
+        </div>
         {/* Hero Section */}
         <div className="max-w-5xl mx-auto text-center mb-32">
           <div className="mb-8 inline-block">
@@ -45,22 +56,51 @@ const Home = () => {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/explore">
+            <Link to="/dashboard">
               <Button size="lg" className="group relative overflow-hidden">
                 <span className="relative z-10 flex items-center gap-2">
-                  Start Exploring
+                  <BarChart3 className="w-5 h-5" />
+                  View Dashboard
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-glow-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </Link>
             
-            <Link to="/about">
+            <Link to="/explore">
               <Button size="lg" variant="outline" className="border-primary/30 hover:bg-primary/10">
-                Learn More
+                Start Exploring
               </Button>
             </Link>
           </div>
+        </div>
+
+        {/* Live Stats Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 max-w-5xl mx-auto">
+          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
+            <p className="text-2xl font-bold text-primary">
+              <AnimatedCounter end={12847} />
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">Active Monitors</p>
+          </Card>
+          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
+            <p className="text-2xl font-bold text-yellow-400">
+              <AnimatedCounter end={342} />
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">Live Anomalies</p>
+          </Card>
+          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
+            <p className="text-2xl font-bold text-purple-400">
+              <AnimatedCounter end={89} />
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">AI Predictions</p>
+          </Card>
+          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
+            <p className="text-2xl font-bold text-green-400">
+              <AnimatedCounter end={5421098} />
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">Data Points</p>
+          </Card>
         </div>
 
         {/* Features Grid */}
