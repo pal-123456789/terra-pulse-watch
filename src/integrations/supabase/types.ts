@@ -53,6 +53,51 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          anomaly_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          report_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          anomaly_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          report_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          anomaly_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          report_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_anomaly_id_fkey"
+            columns: ["anomaly_id"]
+            isOneToOne: false
+            referencedRelation: "anomalies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "user_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       environmental_data: {
         Row: {
           created_at: string
@@ -92,6 +137,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          reference_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          reference_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          reference_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       predictions: {
         Row: {
           confidence: number | null
@@ -128,6 +206,81 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          location: string | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          location?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      reactions: {
+        Row: {
+          anomaly_id: string | null
+          created_at: string | null
+          id: string
+          reaction_type: string
+          report_id: string | null
+          user_id: string
+        }
+        Insert: {
+          anomaly_id?: string | null
+          created_at?: string | null
+          id?: string
+          reaction_type: string
+          report_id?: string | null
+          user_id: string
+        }
+        Update: {
+          anomaly_id?: string | null
+          created_at?: string | null
+          id?: string
+          reaction_type?: string
+          report_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_anomaly_id_fkey"
+            columns: ["anomaly_id"]
+            isOneToOne: false
+            referencedRelation: "anomalies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reactions_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "user_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_reports: {
         Row: {
           created_at: string
@@ -137,6 +290,7 @@ export type Database = {
           latitude: number
           longitude: number
           report_type: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -146,6 +300,7 @@ export type Database = {
           latitude: number
           longitude: number
           report_type: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -155,6 +310,7 @@ export type Database = {
           latitude?: number
           longitude?: number
           report_type?: string
+          user_id?: string | null
         }
         Relationships: []
       }
