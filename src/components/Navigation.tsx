@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Globe, Compass, History, Users, Info, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "./Auth/UserMenu";
 
 const Navigation = () => {
   const location = useLocation();
@@ -26,26 +27,29 @@ const Navigation = () => {
             <span className="text-2xl font-bold text-foreground">TerraPulse</span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.to;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={cn(
-                    "px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300",
-                    isActive
-                      ? "bg-primary/20 text-primary glow-border"
-                      : "text-muted-foreground hover:text-foreground hover:bg-card"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden md:inline">{item.label}</span>
-                </Link>
-              );
-            })}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={cn(
+                      "px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300",
+                      isActive
+                        ? "bg-primary/20 text-primary glow-border"
+                        : "text-muted-foreground hover:text-foreground hover:bg-card"
+                    )}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden md:inline">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+            <UserMenu />
           </div>
         </div>
       </div>

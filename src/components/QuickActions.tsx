@@ -3,16 +3,21 @@ import { Plus, Download, Bell, Share2, Map, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const QuickActions = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const actions = [
     { 
       icon: Map, 
-      label: "New Monitor", 
+      label: "Submit Report", 
       color: "bg-primary/20 hover:bg-primary/30 text-primary",
-      action: () => toast.info("Opening monitor setup...")
+      action: () => {
+        setIsOpen(false);
+        navigate("/report");
+      }
     },
     { 
       icon: BarChart3, 

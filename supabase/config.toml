@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.predict-conditions]
 verify_jwt = false
+
+[functions.analyze-patterns]
+verify_jwt = false
