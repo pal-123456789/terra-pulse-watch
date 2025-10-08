@@ -1,91 +1,53 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Bell, Check, CheckCheck, Loader2, Trash2 } from "lucide-react";
+import { Bell, Check, CheckCheck, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: string;
-  is_read: boolean;
-  created_at: string;
-  reference_id: string | null;
-}
+import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 
 const Notifications = () => {
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [userId, setUserId] = useState<string>();
+  const [allNotifications, setAllNotifications] = useState<any[]>([]);
+
+  const { notifications: realtimeNotifications, markAsRead, markAllAsRead } = useRealtimeNotifications(userId);
 
   useEffect(() => {
-    fetchNotifications();
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        await fetchAllNotifications(user.id);
+      }
+      setLoading(false);
+    };
+    getUser();
   }, []);
 
-  const fetchNotifications = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      setNotifications(data || []);
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-      toast.error("Failed to load notifications");
-    } finally {
-      setLoading(false);
-    }
+  const fetchAllNotifications = async (uid: string) => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", uid)
+      .order("created_at", { ascending: false });
+    
+    setAllNotifications(data || []);
   };
 
-  const markAsRead = async (notificationId: string) => {
-    try {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("id", notificationId);
-
-      if (error) throw error;
-
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? { ...n, is_read: true } : n))
+  // Merge real-time unread notifications with all notifications
+  useEffect(() => {
+    if (!userId) return;
+    
+    // Update all notifications when real-time data changes
+    setAllNotifications(prev => {
+      const unreadIds = new Set(realtimeNotifications.map(n => n.id));
+      return prev.map(n => 
+        unreadIds.has(n.id) ? { ...n, is_read: false } : n
       );
-      toast.success("Marked as read");
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-      toast.error("Failed to mark as read");
-    }
-  };
-
-  const markAllAsRead = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("user_id", user.id)
-        .eq("is_read", false);
-
-      if (error) throw error;
-
-      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
-      toast.success("All notifications marked as read");
-    } catch (error) {
-      console.error("Error marking all as read:", error);
-      toast.error("Failed to mark all as read");
-    }
-  };
+    });
+  }, [realtimeNotifications, userId]);
 
   const getNotificationIcon = (type: string) => {
     return <Bell className="w-5 h-5" />;
@@ -112,7 +74,7 @@ const Notifications = () => {
     );
   }
 
-  const unreadCount = notifications.filter((n) => !n.is_read).length;
+  const unreadCount = allNotifications.filter((n) => !n.is_read).length;
 
   return (
     <div className="container mx-auto px-6 py-24 min-h-screen">
@@ -132,7 +94,7 @@ const Notifications = () => {
           )}
         </div>
 
-        {notifications.length === 0 ? (
+        {allNotifications.length === 0 ? (
           <Card className="glass-panel">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Bell className="w-16 h-16 text-muted-foreground mb-4" />
@@ -144,7 +106,7 @@ const Notifications = () => {
           </Card>
         ) : (
           <div className="space-y-3">
-            {notifications.map((notification) => (
+            {allNotifications.map((notification) => (
               <Card
                 key={notification.id}
                 className={`glass-panel transition-all ${
