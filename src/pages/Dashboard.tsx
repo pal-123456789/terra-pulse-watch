@@ -125,64 +125,67 @@ const Dashboard = () => {
 
           {/* Live Stats */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="glass-panel p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-primary" />
+            <Card className="glass-panel stat-card p-6 glow-border-hover">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center animate-pulse-glow">
+                  <Activity className="w-6 h-6 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">Active Monitors</span>
+                <span className="text-sm text-muted-foreground font-medium">Active Monitors</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">
+              <p className="text-4xl font-bold text-foreground mb-2">
                 <AnimatedCounter end={liveStats.activeMonitors} />
               </p>
-              <p className="text-xs text-green-400 mt-1">+12.5% from last hour</p>
+              <p className="text-xs text-green-400 font-medium">↗ +12.5% from last hour</p>
             </Card>
 
-            <Card className="glass-panel p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5 text-yellow-400" />
+            <Card className="glass-panel stat-card p-6 glow-border-hover">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-yellow-400" />
                 </div>
-                <span className="text-sm text-muted-foreground">Anomalies Detected</span>
+                <span className="text-sm text-muted-foreground font-medium">Anomalies</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">
+              <p className="text-4xl font-bold text-foreground mb-2">
                 <AnimatedCounter end={liveStats.anomaliesDetected} />
               </p>
-              <p className="text-xs text-yellow-400 mt-1">+8 in last hour</p>
+              <p className="text-xs text-yellow-400 font-medium">↗ +8 in last hour</p>
             </Card>
 
-            <Card className="glass-panel p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-purple-400" />
+            <Card className="glass-panel stat-card p-6 glow-border-hover">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-purple-400" />
                 </div>
-                <span className="text-sm text-muted-foreground">AI Predictions</span>
+                <span className="text-sm text-muted-foreground font-medium">Predictions</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">
+              <p className="text-4xl font-bold text-foreground mb-2">
                 <AnimatedCounter end={liveStats.predictions} />
               </p>
-              <p className="text-xs text-purple-400 mt-1">95.3% accuracy</p>
+              <p className="text-xs text-purple-400 font-medium">⚡ 95.3% accuracy</p>
             </Card>
 
-            <Card className="glass-panel p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <Cloud className="w-5 h-5 text-blue-400" />
+            <Card className="glass-panel stat-card p-6 glow-border-hover">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Cloud className="w-6 h-6 text-blue-400" />
                 </div>
-                <span className="text-sm text-muted-foreground">Data Points</span>
+                <span className="text-sm text-muted-foreground font-medium">Data Points</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">
+              <p className="text-4xl font-bold text-foreground mb-2">
                 <AnimatedCounter end={liveStats.dataPoints} />
               </p>
-              <p className="text-xs text-blue-400 mt-1">Last updated: now</p>
+              <p className="text-xs text-blue-400 font-medium">● Live</p>
             </Card>
           </div>
 
           {/* Charts Row 1 */}
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {/* Activity Trend */}
-            <Card className="glass-panel p-6">
-              <h3 className="text-lg font-bold mb-4 text-foreground">24-Hour Activity Trend</h3>
+            <Card className="glass-panel p-6 glow-border-hover">
+              <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                <Zap className="w-5 h-5 text-primary" />
+                24-Hour Activity Trend
+              </h3>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={trendData}>
                   <defs>
@@ -228,8 +231,11 @@ const Dashboard = () => {
             </Card>
 
             {/* Category Distribution */}
-            <Card className="glass-panel p-6">
-              <h3 className="text-lg font-bold mb-4 text-foreground">Anomaly Categories</h3>
+            <Card className="glass-panel p-6 glow-border-hover">
+              <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                <Activity className="w-5 h-5 text-primary" />
+                Anomaly Categories
+              </h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -260,8 +266,11 @@ const Dashboard = () => {
           </div>
 
           {/* Regional Activity Chart */}
-          <Card className="glass-panel p-6">
-            <h3 className="text-lg font-bold mb-4 text-foreground">Regional Activity Overview</h3>
+          <Card className="glass-panel p-6 glow-border-hover">
+            <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" />
+              Regional Activity Overview
+            </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={regionalData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.1} />

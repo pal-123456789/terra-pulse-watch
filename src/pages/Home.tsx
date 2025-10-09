@@ -76,30 +76,30 @@ const Home = () => {
         </div>
 
         {/* Live Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 max-w-5xl mx-auto">
-          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
-            <p className="text-2xl font-bold text-primary">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 max-w-5xl mx-auto">
+          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
+            <p className="text-3xl font-bold text-primary mb-2">
               <AnimatedCounter end={12847} />
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Active Monitors</p>
+            <p className="text-sm text-muted-foreground font-medium">Active Monitors</p>
           </Card>
-          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
-            <p className="text-2xl font-bold text-yellow-400">
+          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
+            <p className="text-3xl font-bold text-yellow-400 mb-2">
               <AnimatedCounter end={342} />
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Live Anomalies</p>
+            <p className="text-sm text-muted-foreground font-medium">Live Anomalies</p>
           </Card>
-          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
-            <p className="text-2xl font-bold text-purple-400">
+          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
+            <p className="text-3xl font-bold text-purple-400 mb-2">
               <AnimatedCounter end={89} />
             </p>
-            <p className="text-xs text-muted-foreground mt-1">AI Predictions</p>
+            <p className="text-sm text-muted-foreground font-medium">AI Predictions</p>
           </Card>
-          <Card className="glass-panel p-4 text-center hover:glow-border transition-all">
-            <p className="text-2xl font-bold text-green-400">
+          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
+            <p className="text-3xl font-bold text-green-400 mb-2">
               <AnimatedCounter end={5421098} />
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Data Points</p>
+            <p className="text-sm text-muted-foreground font-medium">Data Points</p>
           </Card>
         </div>
 

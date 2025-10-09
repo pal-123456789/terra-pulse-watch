@@ -39,104 +39,134 @@ const Settings = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-24 min-h-screen">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Settings</h1>
+    <div className="min-h-screen bg-space-gradient">
+      <div className="container mx-auto px-6 py-24">
+        <div className="max-w-2xl mx-auto animate-fade-in">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2 text-foreground">
+              <span className="text-primary text-glow">Settings</span>
+            </h1>
+            <p className="text-muted-foreground">Manage your preferences and account</p>
+          </div>
 
-        <div className="space-y-6">
-          {/* Account Settings */}
-          <Card className="glass-panel">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <User className="w-5 h-5" />
-                <CardTitle>Account</CardTitle>
-              </div>
-              <CardDescription>Manage your account settings and preferences</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Email Address</Label>
-                  <p className="text-sm text-muted-foreground">{userEmail}</p>
+          <div className="space-y-6">
+            {/* Account Settings */}
+            <Card className="glass-panel border-primary/20 glow-border-hover">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                    <User className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-foreground">Account</CardTitle>
+                    <CardDescription>Manage your account settings</CardDescription>
+                  </div>
                 </div>
-              </div>
-              <Separator />
-              <Button variant="outline" className="w-full" onClick={handleSignOut}>
-                <Lock className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-background/30 rounded-lg border border-border/50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Mail className="w-4 h-4 text-primary" />
+                    <Label className="text-foreground">Email Address</Label>
+                  </div>
+                  <p className="text-sm text-muted-foreground pl-6">{userEmail}</p>
+                </div>
+                <Separator className="bg-border/50" />
+                <Button 
+                  variant="outline" 
+                  className="w-full border-destructive/50 text-destructive hover:bg-destructive/10" 
+                  onClick={handleSignOut}
+                >
+                  <Lock className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </CardContent>
+            </Card>
 
-          {/* Notification Settings */}
-          <Card className="glass-panel">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5" />
-                <CardTitle>Notifications</CardTitle>
-              </div>
-              <CardDescription>Configure how you receive notifications</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="email-notifications">Email Notifications</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Receive updates and alerts via email
-                  </p>
+            {/* Notification Settings */}
+            <Card className="glass-panel border-primary/20 glow-border-hover">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-foreground">Notifications</CardTitle>
+                    <CardDescription>Configure notification preferences</CardDescription>
+                  </div>
                 </div>
-                <Switch
-                  id="email-notifications"
-                  checked={emailNotifications}
-                  onCheckedChange={setEmailNotifications}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="push-notifications">Push Notifications</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Get real-time alerts in your browser
-                  </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-background/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="space-y-1 flex-1">
+                    <Label htmlFor="email-notifications" className="text-foreground cursor-pointer">
+                      Email Notifications
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receive updates and alerts via email
+                    </p>
+                  </div>
+                  <Switch
+                    id="email-notifications"
+                    checked={emailNotifications}
+                    onCheckedChange={setEmailNotifications}
+                  />
                 </div>
-                <Switch
-                  id="push-notifications"
-                  checked={pushNotifications}
-                  onCheckedChange={setPushNotifications}
-                />
-              </div>
-            </CardContent>
-          </Card>
+                <div className="flex items-center justify-between p-4 bg-background/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="space-y-1 flex-1">
+                    <Label htmlFor="push-notifications" className="text-foreground cursor-pointer">
+                      Push Notifications
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Get real-time alerts in your browser
+                    </p>
+                  </div>
+                  <Switch
+                    id="push-notifications"
+                    checked={pushNotifications}
+                    onCheckedChange={setPushNotifications}
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Privacy Settings */}
-          <Card className="glass-panel">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                <CardTitle>Privacy & Data</CardTitle>
-              </div>
-              <CardDescription>Control your data and privacy preferences</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="data-sharing">Anonymous Data Sharing</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Help improve the platform by sharing anonymous usage data
-                  </p>
+            {/* Privacy Settings */}
+            <Card className="glass-panel border-primary/20 glow-border-hover">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-foreground">Privacy & Data</CardTitle>
+                    <CardDescription>Control your data preferences</CardDescription>
+                  </div>
                 </div>
-                <Switch
-                  id="data-sharing"
-                  checked={dataSharing}
-                  onCheckedChange={setDataSharing}
-                />
-              </div>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between p-4 bg-background/30 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="space-y-1 flex-1">
+                    <Label htmlFor="data-sharing" className="text-foreground cursor-pointer">
+                      Anonymous Data Sharing
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Help improve the platform by sharing usage data
+                    </p>
+                  </div>
+                  <Switch
+                    id="data-sharing"
+                    checked={dataSharing}
+                    onCheckedChange={setDataSharing}
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-          <Button onClick={saveSettings} className="w-full">
-            Save Settings
-          </Button>
+            <Button onClick={saveSettings} className="w-full group relative overflow-hidden" size="lg">
+              <span className="relative z-10">Save Settings</span>
+              <div className="absolute inset-0 bg-glow-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

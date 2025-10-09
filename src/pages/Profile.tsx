@@ -102,91 +102,116 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-24 min-h-screen">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Profile</h1>
-        
-        <Card className="glass-panel">
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <Avatar className="w-20 h-20">
-                <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
-                <AvatarFallback className="bg-primary/20 text-primary text-xl">
-                  {profile.full_name ? getInitials(profile.full_name) : <User className="w-8 h-8" />}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle>{profile.full_name || "Your Profile"}</CardTitle>
-                <CardDescription>Manage your public profile information</CardDescription>
+    <div className="min-h-screen bg-space-gradient">
+      <div className="container mx-auto px-6 py-24">
+        <div className="max-w-2xl mx-auto animate-fade-in">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2 text-foreground">
+              Your <span className="text-primary text-glow">Profile</span>
+            </h1>
+            <p className="text-muted-foreground">Manage your public profile information</p>
+          </div>
+          
+          <Card className="glass-panel border-primary/20">
+            <CardHeader>
+              <div className="flex items-center gap-6">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:blur-2xl transition-all" />
+                  <Avatar className="w-24 h-24 border-2 border-primary/30 relative z-10">
+                    <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                    <AvatarFallback className="bg-primary/20 text-primary text-2xl">
+                      {profile.full_name ? getInitials(profile.full_name) : <User className="w-10 h-10" />}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div>
+                  <CardTitle className="text-2xl text-foreground">{profile.full_name || "Your Profile"}</CardTitle>
+                  <CardDescription className="text-base">
+                    {profile.username ? `@${profile.username}` : "Set your username"}
+                  </CardDescription>
+                </div>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  value={profile.username}
-                  onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                  placeholder="Enter your username"
-                />
-              </div>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-foreground">Username</Label>
+                  <Input
+                    id="username"
+                    value={profile.username}
+                    onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                    placeholder="Enter your username"
+                    className="bg-background/50 border-border focus:border-primary transition-colors"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name</Label>
-                <Input
-                  id="full_name"
-                  value={profile.full_name}
-                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                  placeholder="Enter your full name"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="full_name" className="text-foreground">Full Name</Label>
+                  <Input
+                    id="full_name"
+                    value={profile.full_name}
+                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                    placeholder="Enter your full name"
+                    className="bg-background/50 border-border focus:border-primary transition-colors"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  value={profile.location}
-                  onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                  placeholder="Enter your location"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="location" className="text-foreground">Location</Label>
+                  <Input
+                    id="location"
+                    value={profile.location}
+                    onChange={(e) => setProfile({ ...profile, location: e.target.value })}
+                    placeholder="Enter your location"
+                    className="bg-background/50 border-border focus:border-primary transition-colors"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  value={profile.bio}
-                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                  placeholder="Tell us about yourself"
-                  rows={4}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bio" className="text-foreground">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    value={profile.bio}
+                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                    placeholder="Tell us about yourself"
+                    rows={4}
+                    className="bg-background/50 border-border focus:border-primary transition-colors resize-none"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="avatar_url">Avatar URL</Label>
-                <Input
-                  id="avatar_url"
-                  value={profile.avatar_url}
-                  onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })}
-                  placeholder="Enter avatar image URL"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="avatar_url" className="text-foreground">Avatar URL</Label>
+                  <Input
+                    id="avatar_url"
+                    value={profile.avatar_url}
+                    onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })}
+                    placeholder="Enter avatar image URL"
+                    className="bg-background/50 border-border focus:border-primary transition-colors"
+                  />
+                </div>
 
-              <Button type="submit" disabled={saving} className="w-full">
-                {saving ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Changes"
-                )}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <Button 
+                  type="submit" 
+                  disabled={saving} 
+                  className="w-full group relative overflow-hidden"
+                  size="lg"
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {saving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Saving Changes...
+                      </>
+                    ) : (
+                      "Save Changes"
+                    )}
+                  </span>
+                  <div className="absolute inset-0 bg-glow-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
