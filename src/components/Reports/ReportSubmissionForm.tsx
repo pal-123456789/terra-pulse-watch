@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { MapPin, Upload, Send } from "lucide-react";
+import { reportSchema } from "@/lib/validationSchemas";
 
 export const ReportSubmissionForm = () => {
   const [loading, setLoading] = useState(false);
@@ -63,12 +64,27 @@ export const ReportSubmissionForm = () => {
         return;
       }
 
+      // Validate form data
+      const validationResult = reportSchema.safeParse({
+        reportType,
+        description,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        imageFile,
+      });
+
+      if (!validationResult.success) {
+        const errors = validationResult.error.errors.map(e => e.message).join(", ");
+        toast.error(errors);
+        return;
+      }
+
       let imageUrl = null;
 
       // Upload image if provided
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}/${Math.random()}.${fileExt}`;
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from('report-images')
@@ -145,7 +161,9 @@ export const ReportSubmissionForm = () => {
             onChange={(e) => setDescription(e.target.value)}
             required
             rows={4}
+            maxLength={5000}
           />
+          <p className="text-xs text-muted-foreground">{description.length}/5000 characters</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -190,10 +208,19 @@ export const ReportSubmissionForm = () => {
           <Input
             id="image"
             type="file"
-            accept="image/*"
-            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file && file.size > 5 * 1024 * 1024) {
+                toast.error("Image must be less than 5MB");
+                e.target.value = "";
+                return;
+              }
+              setImageFile(file || null);
+            }}
             className="cursor-pointer"
           />
+          <p className="text-xs text-muted-foreground">Max size: 5MB. Formats: JPEG, PNG, WebP</p>
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>

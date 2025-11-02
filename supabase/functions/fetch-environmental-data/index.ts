@@ -14,6 +14,7 @@ serve(async (req) => {
   try {
     const { latitude, longitude } = await req.json();
 
+    // Validate coordinates
     if (!latitude || !longitude) {
       return new Response(
         JSON.stringify({ error: "Latitude and longitude are required" }),
@@ -21,11 +22,27 @@ serve(async (req) => {
       );
     }
 
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      return new Response(
+        JSON.stringify({ error: "Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     console.log(`Fetching environmental data for lat: ${latitude}, lon: ${longitude}`);
+
+    // Get API keys from environment
+    const OPENWEATHER_API_KEY = Deno.env.get('OPENWEATHER_API_KEY');
+    const NASA_API_KEY = Deno.env.get('NASA_API_KEY');
+
+    if (!OPENWEATHER_API_KEY || !NASA_API_KEY) {
+      console.error('API keys not configured');
+      throw new Error('API keys not configured');
+    }
 
     // Fetch data from OpenWeather API
     const weatherResponse = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=db762d54fef72d47495b6b7613e0d1c8&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPENWEATHER_API_KEY}&units=metric`
     );
 
     if (!weatherResponse.ok) {
@@ -37,7 +54,7 @@ serve(async (req) => {
 
     // Fetch NASA Earth imagery
     const nasaResponse = await fetch(
-      `https://api.nasa.gov/planetary/earth/imagery?lon=${longitude}&lat=${latitude}&dim=0.1&api_key=IwCDkErKUYfebd33ifUXKcJEQO4bMLcXtNdohkvu`
+      `https://api.nasa.gov/planetary/earth/imagery?lon=${longitude}&lat=${latitude}&dim=0.1&api_key=${NASA_API_KEY}`
     );
 
     let nasaData = null;
