@@ -31,34 +31,35 @@ const Home = () => {
       <LiveNotifications />
       <QuickActions />
 
-      <main className="container mx-auto px-6 pt-32 pb-20 relative z-10">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-12 md:pb-20 relative z-10">
         {/* Search Bar */}
-        <div className="mb-12">
+        <div className="mb-8 md:mb-12">
           <SearchBar />
         </div>
+        
         {/* Hero Section */}
-        <div className="max-w-5xl mx-auto text-center mb-32">
-          <div className="mb-8 inline-block">
-            <div className="relative">
-              <Globe2 className="w-24 h-24 text-primary animate-float mx-auto" />
+        <div className="max-w-5xl mx-auto text-center mb-20 md:mb-32 animate-fade-in">
+          <div className="mb-6 md:mb-8 inline-block">
+            <div className="relative animate-float-3d">
+              <Globe2 className="w-16 h-16 md:w-24 md:h-24 text-primary mx-auto" />
               <div className="absolute inset-0 animate-pulse-glow rounded-full" />
             </div>
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 text-foreground">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-foreground">
             Terra<span className="text-primary text-glow">Pulse</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto px-4">
             AI-Powered Environmental Monitoring System
-            <br />
-            Detecting and predicting natural anomalies in real-time
+            <br className="hidden sm:block" />
+            <span className="block mt-2">Detecting and predicting natural anomalies in real-time</span>
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
             <Link to="/dashboard">
-              <Button size="lg" className="group relative overflow-hidden">
-                <span className="relative z-10 flex items-center gap-2">
+              <Button size="lg" className="group relative overflow-hidden w-full sm:w-auto">
+                <span className="relative z-10 flex items-center gap-2 justify-center">
                   <BarChart3 className="w-5 h-5" />
                   View Dashboard
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -68,7 +69,7 @@ const Home = () => {
             </Link>
             
             <Link to="/explore">
-              <Button size="lg" variant="outline" className="border-primary/30 hover:bg-primary/10">
+              <Button size="lg" variant="outline" className="border-primary/30 hover:bg-primary/10 w-full sm:w-auto">
                 Start Exploring
               </Button>
             </Link>
@@ -76,61 +77,61 @@ const Home = () => {
         </div>
 
         {/* Live Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 max-w-5xl mx-auto">
-          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
-            <p className="text-3xl font-bold text-primary mb-2">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 md:mb-16 max-w-5xl mx-auto px-4">
+          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            <p className="text-2xl md:text-3xl font-bold text-primary mb-2">
               <AnimatedCounter end={12847} />
             </p>
-            <p className="text-sm text-muted-foreground font-medium">Active Monitors</p>
+            <p className="text-xs md:text-sm text-muted-foreground font-medium">Active Monitors</p>
           </Card>
-          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
-            <p className="text-3xl font-bold text-yellow-400 mb-2">
+          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <p className="text-2xl md:text-3xl font-bold text-yellow-400 mb-2">
               <AnimatedCounter end={342} />
             </p>
-            <p className="text-sm text-muted-foreground font-medium">Live Anomalies</p>
+            <p className="text-xs md:text-sm text-muted-foreground font-medium">Live Anomalies</p>
           </Card>
-          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
-            <p className="text-3xl font-bold text-purple-400 mb-2">
+          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            <p className="text-2xl md:text-3xl font-bold text-purple-400 mb-2">
               <AnimatedCounter end={89} />
             </p>
-            <p className="text-sm text-muted-foreground font-medium">AI Predictions</p>
+            <p className="text-xs md:text-sm text-muted-foreground font-medium">AI Predictions</p>
           </Card>
-          <Card className="glass-panel stat-card p-6 text-center glow-border-hover cursor-pointer">
-            <p className="text-3xl font-bold text-green-400 mb-2">
+          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.4s' }}>
+            <p className="text-2xl md:text-3xl font-bold text-green-400 mb-2">
               <AnimatedCounter end={5421098} />
             </p>
-            <p className="text-sm text-muted-foreground font-medium">Data Points</p>
+            <p className="text-xs md:text-sm text-muted-foreground font-medium">Data Points</p>
           </Card>
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="glass-panel p-8 rounded-xl hover:glow-border transition-all duration-300 group">
-            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-pulse-glow">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto px-4">
+          <div className="glass-panel p-6 md:p-8 rounded-xl hover:glow-border transition-all duration-300 group animate-float-3d" style={{ animationDelay: '0s' }}>
+            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-glow-pulse">
               <Zap className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-foreground">Real-Time Detection</h3>
-            <p className="text-muted-foreground">
+            <h3 className="text-lg md:text-xl font-bold mb-3 text-foreground">Real-Time Detection</h3>
+            <p className="text-sm md:text-base text-muted-foreground">
               Monitor environmental changes instantly with AI-powered analysis of NASA satellite data and weather patterns.
             </p>
           </div>
 
-          <div className="glass-panel p-8 rounded-xl hover:glow-border transition-all duration-300 group">
-            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-pulse-glow">
+          <div className="glass-panel p-6 md:p-8 rounded-xl hover:glow-border transition-all duration-300 group animate-float-3d" style={{ animationDelay: '2s' }}>
+            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-glow-pulse">
               <TrendingUp className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-foreground">Predictive Analytics</h3>
-            <p className="text-muted-foreground">
+            <h3 className="text-lg md:text-xl font-bold mb-3 text-foreground">Predictive Analytics</h3>
+            <p className="text-sm md:text-base text-muted-foreground">
               Leverage machine learning to forecast potential natural disasters and environmental anomalies.
             </p>
           </div>
 
-          <div className="glass-panel p-8 rounded-xl hover:glow-border transition-all duration-300 group">
-            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-pulse-glow">
+          <div className="glass-panel p-6 md:p-8 rounded-xl hover:glow-border transition-all duration-300 group animate-float-3d" style={{ animationDelay: '4s' }}>
+            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:animate-glow-pulse">
               <Globe2 className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-foreground">Global Coverage</h3>
-            <p className="text-muted-foreground">
+            <h3 className="text-lg md:text-xl font-bold mb-3 text-foreground">Global Coverage</h3>
+            <p className="text-sm md:text-base text-muted-foreground">
               Access worldwide environmental data integrated from multiple sources including NASA, weather APIs, and more.
             </p>
           </div>

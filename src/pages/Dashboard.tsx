@@ -95,8 +95,8 @@ const Dashboard = () => {
     <div className="min-h-screen bg-space-gradient">
       <Navigation />
 
-      <main className="container mx-auto px-6 pt-24 pb-12">
-        <div className="max-w-7xl mx-auto">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>

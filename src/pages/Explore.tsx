@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye, AlertTriangle, Info } from "lucide-react";
+import { MapPin, Activity, TrendingUp, Wind, Thermometer, Droplets, Eye, AlertTriangle, Info, Radar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -7,9 +7,14 @@ import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { Globe3D } from "@/components/Globe3D";
+import { LocationSearchBar } from "@/components/LocationSearchBar";
+import { useLenisScroll } from "@/hooks/useLenisScroll";
 
 const Explore = () => {
-  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
+  useLenisScroll();
+  
+  const [location, setLocation] = useState<{ lat: number; lon: number; name?: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [locationError, setLocationError] = useState<string>("");
   const [weatherData, setWeatherData] = useState<any>(null);
@@ -209,17 +214,35 @@ const Explore = () => {
     ];
   };
 
+  const handleLocationSelect = (selectedLocation: { lat: number; lon: number; name: string }) => {
+    setLocation(selectedLocation);
+    setLocationError("");
+    fetchWeatherData(selectedLocation);
+  };
+
   return (
     <div className="min-h-screen bg-space-gradient">
       <Navigation />
 
-      <main className="container mx-auto px-6 pt-24 pb-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
-              Explore <span className="text-primary">Earth</span>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header Section */}
+          <div className="text-center space-y-4 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+              <Radar className="w-4 h-4 text-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">Live Environmental Intelligence</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-glow">
+              Explore <span className="text-primary">Planet Earth</span>
             </h1>
-            <p className="text-muted-foreground">Real-time environmental monitoring and analysis</p>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Search any location worldwide to analyze real-time environmental data, detect anomalies, and predict future conditions using AI
+            </p>
+          </div>
+
+          {/* Location Search */}
+          <div className="max-w-3xl mx-auto">
+            <LocationSearchBar onLocationSelect={handleLocationSelect} />
           </div>
 
           {/* Location Instructions Alert */}
@@ -274,7 +297,7 @@ const Explore = () => {
 
           {/* Data Visualizations */}
           {weatherData && (
-            <div className="mb-6 grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
               <Card className="glass-panel p-6">
                 <h3 className="text-lg font-bold mb-4 text-foreground">Temperature Trend (24h)</h3>
                 <ResponsiveContainer width="100%" height={200}>
@@ -323,20 +346,20 @@ const Explore = () => {
             </div>
           )}
 
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Globe Visualization */}
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main 3D Globe Visualization */}
+            <div className="lg:col-span-2 order-2 lg:order-1">
               <Card className="glass-panel p-6 h-[600px] relative overflow-hidden group">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1200')] bg-cover bg-center opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-br from-space-deep to-background opacity-80" />
                 
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin className={`w-5 h-5 ${location ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <MapPin className={`w-5 h-5 ${location ? 'text-primary animate-pulse' : 'text-muted-foreground'}`} />
                       <span className="text-sm text-muted-foreground">
-                        {location
+                        {location?.name || (location
                           ? `${location.lat.toFixed(2)}, ${location.lon.toFixed(2)}`
-                          : loading ? "Acquiring location..." : "Location not available"}
+                          : loading ? "Acquiring location..." : "No location selected")}
                       </span>
                     </div>
                     
@@ -345,51 +368,48 @@ const Explore = () => {
                         onClick={requestLocation} 
                         size="sm" 
                         disabled={loading}
-                        className={loading ? "animate-pulse" : ""}
+                        className="bg-primary/20 hover:bg-primary/30 border border-primary/40"
                       >
-                        {loading ? "Getting Location..." : locationError ? "Retry Location" : "Enable Location"}
+                        {loading ? "Getting Location..." : locationError ? "Retry Location" : "Use My Location"}
                       </Button>
                     )}
                   </div>
 
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center space-y-8">
-                      <div className="relative inline-block">
-                        <div className="w-64 h-64 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 animate-pulse-glow flex items-center justify-center">
-                          <Eye className="w-32 h-32 text-primary" />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4 justify-center">
-                        <Button
-                          onClick={handleDetection}
-                          size="lg"
-                          className="glow-border"
-                          disabled={!weatherData || analysisLoading}
-                        >
-                          <Activity className="w-5 h-5 mr-2" />
-                          {analysisLoading ? "Analyzing..." : "Detection"}
-                        </Button>
-                        
-                        <Button
-                          onClick={handlePrediction}
-                          size="lg"
-                          variant="outline"
-                          className="border-primary/30"
-                          disabled={!weatherData || analysisLoading}
-                        >
-                          <TrendingUp className="w-5 h-5 mr-2" />
-                          Prediction
-                        </Button>
-                      </div>
+                  <div className="flex-1 relative">
+                    {/* 3D Globe */}
+                    <div className="absolute inset-0">
+                      <Globe3D />
                     </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
+                    <Button
+                      onClick={handleDetection}
+                      size="lg"
+                      className="glow-border bg-primary/10 hover:bg-primary/20 border-2"
+                      disabled={!weatherData || analysisLoading}
+                    >
+                      <Activity className="w-5 h-5 mr-2" />
+                      {analysisLoading ? "Analyzing..." : "Detect Anomalies"}
+                    </Button>
+                    
+                    <Button
+                      onClick={handlePrediction}
+                      size="lg"
+                      className="bg-purple-500/10 hover:bg-purple-500/20 border-2 border-purple-500/30"
+                      disabled={!weatherData || analysisLoading}
+                    >
+                      <TrendingUp className="w-5 h-5 mr-2" />
+                      Predict Conditions
+                    </Button>
                   </div>
                 </div>
               </Card>
             </div>
 
             {/* Data Panel */}
-            <div className="space-y-6">
+            <div className="space-y-6 order-1 lg:order-2">
               <Card className="glass-panel p-6">
                 <h3 className="text-lg font-bold mb-4 text-foreground">Current Conditions</h3>
                 
