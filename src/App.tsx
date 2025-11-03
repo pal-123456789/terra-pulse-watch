@@ -16,6 +16,8 @@ import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const AppContent = () => {
   useLenisScroll();
@@ -33,6 +35,8 @@ const AppContent = () => {
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/learn" element={<Learn />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

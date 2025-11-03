@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import TimelineView from "@/components/TimelineView";
+import Footer from "@/components/Footer";
 
 const History = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -258,6 +259,8 @@ const History = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

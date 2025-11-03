@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import { Globe, Compass, History, Users, Info, BarChart3, GraduationCap } from "lucide-react";
+import { Globe, Compass, History, Users, Info, BarChart3, GraduationCap, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserMenu } from "./Auth/UserMenu";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 const Navigation = () => {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +46,7 @@ const Navigation = () => {
           </Link>
 
           <div className="flex items-center gap-2 md:gap-4">
+            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -68,9 +71,50 @@ const Navigation = () => {
                 );
               })}
             </div>
+            
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </Button>
+            
             <UserMenu />
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden mt-4 pb-4 space-y-2 animate-fade-in">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.to;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300",
+                    isActive
+                      ? "bg-primary/20 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+                  )}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </nav>
   );

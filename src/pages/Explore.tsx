@@ -10,6 +10,7 @@ import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
 import { Globe3D } from "@/components/Globe3D";
 import { LocationSearchBar } from "@/components/LocationSearchBar";
 import { useLenisScroll } from "@/hooks/useLenisScroll";
+import Footer from "@/components/Footer";
 
 const Explore = () => {
   useLenisScroll();
@@ -548,6 +549,8 @@ const Explore = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

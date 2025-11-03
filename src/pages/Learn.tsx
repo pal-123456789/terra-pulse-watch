@@ -18,6 +18,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { toast } from "sonner";
+import Footer from "@/components/Footer";
 
 interface EnvironmentalData {
   temperature: number;
@@ -163,9 +164,12 @@ const Learn = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 py-24 min-h-screen">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
+    <div className="min-h-screen bg-space-gradient">
+      <Navigation />
+      
+      <div className="container mx-auto px-6 py-24">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header */}
         <div className="text-center space-y-4 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Brain className="w-12 h-12 text-primary" />
@@ -450,6 +454,9 @@ const Learn = () => {
           </TabsContent>
         </Tabs>
       </div>
+    </div>
+
+      <Footer />
     </div>
   );
 };

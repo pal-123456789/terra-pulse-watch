@@ -7,6 +7,9 @@ import AnimatedCounter from "@/components/AnimatedCounter";
 import SearchBar from "@/components/SearchBar";
 import QuickActions from "@/components/QuickActions";
 import LiveNotifications from "@/components/LiveNotifications";
+import { Globe3D } from "@/components/Globe3D";
+import Footer from "@/components/Footer";
+import RealtimeStats from "@/components/RealtimeStats";
 
 const Home = () => {
   return (
@@ -40,9 +43,8 @@ const Home = () => {
         {/* Hero Section */}
         <div className="max-w-5xl mx-auto text-center mb-20 md:mb-32 animate-fade-in">
           <div className="mb-6 md:mb-8 inline-block">
-            <div className="relative animate-float-3d">
-              <Globe2 className="w-16 h-16 md:w-24 md:h-24 text-primary mx-auto" />
-              <div className="absolute inset-0 animate-pulse-glow rounded-full" />
+            <div className="relative w-32 h-32 md:w-48 md:h-48 mx-auto">
+              <Globe3D />
             </div>
           </div>
           
@@ -76,33 +78,8 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Live Stats Bar */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 md:mb-16 max-w-5xl mx-auto px-4">
-          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <p className="text-2xl md:text-3xl font-bold text-primary mb-2">
-              <AnimatedCounter end={12847} />
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground font-medium">Active Monitors</p>
-          </Card>
-          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <p className="text-2xl md:text-3xl font-bold text-yellow-400 mb-2">
-              <AnimatedCounter end={342} />
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground font-medium">Live Anomalies</p>
-          </Card>
-          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <p className="text-2xl md:text-3xl font-bold text-purple-400 mb-2">
-              <AnimatedCounter end={89} />
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground font-medium">AI Predictions</p>
-          </Card>
-          <Card className="glass-panel stat-card p-4 md:p-6 text-center glow-border-hover cursor-pointer animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            <p className="text-2xl md:text-3xl font-bold text-green-400 mb-2">
-              <AnimatedCounter end={5421098} />
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground font-medium">Data Points</p>
-          </Card>
-        </div>
+        {/* Live Stats Bar - Now Real-time */}
+        <RealtimeStats />
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto px-4">
@@ -137,6 +114,8 @@ const Home = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };

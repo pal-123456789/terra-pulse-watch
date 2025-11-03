@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import ActivityFeed from "@/components/ActivityFeed";
+import Footer from "@/components/Footer";
 
 const Community = () => {
   return (
@@ -119,6 +120,8 @@ const Community = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

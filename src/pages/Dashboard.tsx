@@ -13,6 +13,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell 
 } from "recharts";
 import { toast } from "sonner";
+import Footer from "@/components/Footer";
 
 const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -293,6 +294,8 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

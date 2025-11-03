@@ -2,6 +2,7 @@ import { Satellite, Cpu, Database, Shield } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const About = () => {
   return (
@@ -121,6 +122,8 @@ const About = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };
