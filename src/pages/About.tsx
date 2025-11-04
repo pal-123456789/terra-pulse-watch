@@ -1,10 +1,24 @@
-import { Satellite, Cpu, Database, Shield } from "lucide-react";
+import { Satellite, Cpu, Database, Shield, Users, Target, Globe2, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const About = () => {
+  const [email, setEmail] = useState("");
+
+  const handleJoinMission = () => {
+    if (email && email.includes("@")) {
+      toast.success("Welcome to the mission! Check your email for next steps.");
+      setEmail("");
+    } else {
+      toast.error("Please enter a valid email address");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-space-gradient">
       <Navigation />
@@ -112,14 +126,71 @@ const About = () => {
             </div>
           </Card>
 
-          {/* CTA */}
-          <div className="mt-12 text-center">
-            <Button size="lg" className="group">
-              <span className="flex items-center gap-2">
-                Join the Mission
-              </span>
-            </Button>
-          </div>
+          {/* Join the Mission */}
+          <Card className="glass-panel p-8 mt-12 border-primary/30 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold mb-4 text-foreground">
+                  Join the <span className="text-primary text-glow">Mission</span>
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Be part of the global community monitoring Earth's environmental changes
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="text-center p-6 bg-background/30 rounded-lg border border-border/50 hover:border-primary/50 transition-all hover:scale-105">
+                  <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Citizen Scientists</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Submit environmental reports from your location and contribute to global research
+                  </p>
+                </div>
+
+                <div className="text-center p-6 bg-background/30 rounded-lg border border-border/50 hover:border-primary/50 transition-all hover:scale-105">
+                  <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-purple-400" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Researchers</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Access real-time data and AI-powered insights for your environmental studies
+                  </p>
+                </div>
+
+                <div className="text-center p-6 bg-background/30 rounded-lg border border-border/50 hover:border-primary/50 transition-all hover:scale-105">
+                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Globe2 className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Organizations</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Leverage our platform for environmental monitoring and decision-making
+                  </p>
+                </div>
+              </div>
+
+              <div className="max-w-md mx-auto">
+                <div className="flex gap-2 mb-4">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="glass-panel border-border focus:border-primary"
+                  />
+                  <Button onClick={handleJoinMission} size="lg" className="group">
+                    <Sparkles className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
+                    Join
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  Join thousands of observers monitoring Earth's environmental changes
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </main>
 

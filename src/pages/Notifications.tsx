@@ -3,9 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Check, CheckCheck, Loader2 } from "lucide-react";
+import { Bell, Check, CheckCheck, Loader2, Home } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
+import { Link } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const Notifications = () => {
   const [loading, setLoading] = useState(true);
@@ -77,22 +81,32 @@ const Notifications = () => {
   const unreadCount = allNotifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="container mx-auto px-6 py-24 min-h-screen">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold">Notifications</h1>
-            <p className="text-muted-foreground mt-2">
-              {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : "All caught up!"}
-            </p>
-          </div>
-          {unreadCount > 0 && (
-            <Button onClick={markAllAsRead} variant="outline" size="sm">
-              <CheckCheck className="w-4 h-4 mr-2" />
-              Mark all as read
-            </Button>
-          )}
-        </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-space-gradient">
+        <Navigation />
+        <div className="container mx-auto px-6 py-24">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="text-4xl font-bold">Notifications</h1>
+                <p className="text-muted-foreground mt-2">
+                  {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : "All caught up!"}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                {unreadCount > 0 && (
+                  <Button onClick={markAllAsRead} variant="outline" size="sm">
+                    <CheckCheck className="w-4 h-4 mr-2" />
+                    Mark all as read
+                  </Button>
+                )}
+                <Link to="/">
+                  <Button variant="outline" size="icon" className="glass-panel">
+                    <Home className="w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
 
         {allNotifications.length === 0 ? (
           <Card className="glass-panel">
@@ -150,6 +164,9 @@ const Notifications = () => {
         )}
       </div>
     </div>
+    <Footer />
+    </div>
+    </ProtectedRoute>
   );
 };
 

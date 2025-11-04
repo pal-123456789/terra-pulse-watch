@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useLenisScroll } from "@/hooks/useLenisScroll";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Explore from "./pages/Explore";
@@ -25,15 +26,16 @@ const AppContent = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/explore" element={<Explore />} />
-      <Route path="/history" element={<History />} />
-      <Route path="/community" element={<Community />} />
-      <Route path="/report" element={<ReportPage />} />
-      <Route path="/about" element={<About />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+      <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+      <Route path="/report" element={<ProtectedRoute><ReportPage /></ProtectedRoute>} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/settings" element={<Settings />} />
+      {/* Public routes */}
+      <Route path="/community" element={<Community />} />
+      <Route path="/about" element={<About />} />
       <Route path="/learn" element={<Learn />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />

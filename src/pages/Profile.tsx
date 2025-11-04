@@ -7,7 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Loader2, User } from "lucide-react";
+import { Loader2, User, Home } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
@@ -102,15 +106,24 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-space-gradient">
-      <div className="container mx-auto px-6 py-24">
-        <div className="max-w-2xl mx-auto animate-fade-in">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
-              Your <span className="text-primary text-glow">Profile</span>
-            </h1>
-            <p className="text-muted-foreground">Manage your public profile information</p>
-          </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-space-gradient">
+        <Navigation />
+        <div className="container mx-auto px-6 py-24">
+          <div className="max-w-2xl mx-auto animate-fade-in">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold mb-2 text-foreground">
+                  Your <span className="text-primary text-glow">Profile</span>
+                </h1>
+                <p className="text-muted-foreground">Manage your public profile information</p>
+              </div>
+              <Link to="/">
+                <Button variant="outline" size="icon" className="glass-panel">
+                  <Home className="w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
           
           <Card className="glass-panel border-primary/20">
             <CardHeader>
@@ -213,7 +226,9 @@ const Profile = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
+    </ProtectedRoute>
   );
 };
 

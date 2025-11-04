@@ -6,7 +6,11 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Bell, Lock, Mail, Shield, User } from "lucide-react";
+import { Bell, Lock, Mail, Shield, User, Home } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -39,15 +43,24 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-space-gradient">
-      <div className="container mx-auto px-6 py-24">
-        <div className="max-w-2xl mx-auto animate-fade-in">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
-              <span className="text-primary text-glow">Settings</span>
-            </h1>
-            <p className="text-muted-foreground">Manage your preferences and account</p>
-          </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-space-gradient">
+        <Navigation />
+        <div className="container mx-auto px-6 py-24">
+          <div className="max-w-2xl mx-auto animate-fade-in">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold mb-2 text-foreground">
+                  <span className="text-primary text-glow">Settings</span>
+                </h1>
+                <p className="text-muted-foreground">Manage your preferences and account</p>
+              </div>
+              <Link to="/">
+                <Button variant="outline" size="icon" className="glass-panel">
+                  <Home className="w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
 
           <div className="space-y-6">
             {/* Account Settings */}
@@ -169,7 +182,9 @@ const Settings = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
+    </ProtectedRoute>
   );
 };
 
