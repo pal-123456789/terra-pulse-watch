@@ -119,8 +119,11 @@ const AnimatedGlobe = () => {
 
 export const Globe3D = () => {
   return (
-    <div className="w-full h-full">
-      <Canvas camera={{ position: [0, 0, 3.5], fov: 50 }}>
+    <div className="w-full h-full" style={{ touchAction: 'none' }}>
+      <Canvas 
+        camera={{ position: [0, 0, 3.5], fov: 50 }}
+        onPointerMissed={(e) => e.stopPropagation()}
+      >
         <Stars 
           radius={100} 
           depth={50} 
@@ -148,6 +151,9 @@ export const Globe3D = () => {
           maxDistance={6}
           autoRotate
           autoRotateSpeed={0.3}
+          enableDamping
+          dampingFactor={0.05}
+          makeDefault
         />
       </Canvas>
     </div>

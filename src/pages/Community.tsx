@@ -79,7 +79,11 @@ const Community = () => {
                 Real-time visualization of community reports and environmental data across the globe
               </p>
             </div>
-            <div className="relative h-[500px] rounded-lg overflow-hidden bg-gradient-to-b from-space-dark to-space-darker">
+            <div 
+              className="relative h-[500px] rounded-lg overflow-hidden bg-gradient-to-b from-space-dark to-space-darker"
+              style={{ touchAction: 'none' }}
+              onWheel={(e) => e.stopPropagation()}
+            >
               <Globe3D />
               <div className="absolute bottom-4 left-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg p-4 border border-border/50">
                 <div className="grid grid-cols-3 gap-4 text-center">
