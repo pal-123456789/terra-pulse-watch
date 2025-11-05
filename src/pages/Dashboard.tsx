@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import InteractiveMap from "@/components/InteractiveMap";
+import AdvancedAnalytics from "@/components/AdvancedAnalytics";
 import { 
   Activity, TrendingUp, AlertTriangle, Cloud, 
-  Download, RefreshCw, MapPin, Zap 
+  Download, RefreshCw, MapPin, Zap, PieChart as PieChartIcon, BarChart3 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -99,12 +102,16 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 animate-fade-in">
             <div>
-              <h1 className="text-4xl font-bold mb-2 text-foreground">
-                Analytics <span className="text-primary">Dashboard</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3">
+                <Activity className="w-3 h-3 text-primary animate-pulse" />
+                <span className="text-xs font-medium text-primary">Real-Time Intelligence</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2 text-foreground text-glow">
+                Analytics <span className="text-primary animate-pulse-glow">Dashboard</span>
               </h1>
-              <p className="text-muted-foreground">Real-time environmental monitoring overview</p>
+              <p className="text-muted-foreground text-lg">Advanced environmental monitoring and predictive analytics</p>
             </div>
             
             <div className="flex gap-3">
@@ -112,12 +119,12 @@ const Dashboard = () => {
                 onClick={handleRefresh} 
                 variant="outline"
                 disabled={isRefreshing}
-                className="gap-2"
+                className="gap-2 border-primary/30"
               >
                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
-              <Button onClick={handleExport} className="gap-2">
+              <Button onClick={handleExport} className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/40">
                 <Download className="w-4 h-4" />
                 Export
               </Button>
@@ -179,14 +186,23 @@ const Dashboard = () => {
             </Card>
           </div>
 
-          {/* Charts Row 1 */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-6">
-            {/* Activity Trend */}
-            <Card className="glass-panel p-6 glow-border-hover">
-              <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" />
-                24-Hour Activity Trend
-              </h3>
+          {/* Tabs for different views */}
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="glass-panel">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="map">Global Map</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              {/* Charts Row 1 */}
+              <div className="grid lg:grid-cols-2 gap-6 mb-6">
+                {/* Activity Trend */}
+                <Card className="glass-panel p-6 glow-border-hover hover:scale-[1.01] transition-all">
+                  <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-primary" />
+                    24-Hour Activity Trend
+                  </h3>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={trendData}>
                   <defs>
@@ -231,12 +247,12 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </Card>
 
-            {/* Category Distribution */}
-            <Card className="glass-panel p-6 glow-border-hover">
-              <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
-                <Activity className="w-5 h-5 text-primary" />
-                Anomaly Categories
-              </h3>
+                {/* Category Distribution */}
+                <Card className="glass-panel p-6 glow-border-hover hover:scale-[1.01] transition-all">
+                  <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                    <PieChartIcon className="w-5 h-5 text-purple-400" />
+                    Anomaly Categories
+                  </h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -263,15 +279,15 @@ const Dashboard = () => {
                   />
                 </PieChart>
               </ResponsiveContainer>
-            </Card>
-          </div>
+                </Card>
+              </div>
 
-          {/* Regional Activity Chart */}
-          <Card className="glass-panel p-6 glow-border-hover">
-            <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" />
-              Regional Activity Overview
-            </h3>
+              {/* Regional Activity Chart */}
+              <Card className="glass-panel p-6 glow-border-hover hover:scale-[1.005] transition-all">
+                <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-green-400" />
+                  Regional Activity Overview
+                </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={regionalData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.1} />
@@ -286,12 +302,22 @@ const Dashboard = () => {
                   }} 
                 />
                 <Legend />
-                <Bar dataKey="active" fill="hsl(var(--primary))" name="Active Monitors" />
-                <Bar dataKey="predicted" fill="#9b59b6" name="Predictions" />
-                <Bar dataKey="critical" fill="#ff6b9d" name="Critical Alerts" />
+                <Bar dataKey="active" fill="hsl(var(--primary))" name="Active Monitors" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="predicted" fill="#9b59b6" name="Predictions" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="critical" fill="#ff6b9d" name="Critical Alerts" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </Card>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <AdvancedAnalytics />
+            </TabsContent>
+
+            <TabsContent value="map">
+              <InteractiveMap />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
