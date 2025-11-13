@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Globe2, TrendingUp, BarChart3 } from "lucide-react";
+import { ArrowRight, Zap, Globe2, TrendingUp, BarChart3, Satellite, Brain, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -11,6 +11,9 @@ import ParticleBackground from "@/components/ParticleBackground";
 import { Globe3D } from "@/components/Globe3D";
 import Footer from "@/components/Footer";
 import RealtimeStats from "@/components/RealtimeStats";
+import SatelliteTracker from "@/components/SatelliteTracker";
+import AIPredictor from "@/components/AIPredictor";
+import DataStreamMonitor from "@/components/DataStreamMonitor";
 
 const Home = () => {
   return (
@@ -47,8 +50,8 @@ const Home = () => {
         {/* Hero Section */}
         <div className="max-w-5xl mx-auto text-center mb-20 md:mb-32 animate-fade-in">
           <div className="mb-6 md:mb-8 inline-block">
-            <div className="relative w-32 h-32 md:w-48 md:h-48 mx-auto">
-              <Globe3D />
+            <div className="relative w-32 h-32 md:w-64 md:h-64 lg:w-80 lg:h-80 mx-auto touch-none">
+              <Globe3D className="pointer-events-auto" />
             </div>
           </div>
           
@@ -136,6 +139,80 @@ const Home = () => {
             <div className="mt-4 flex items-center gap-2 text-xs text-green-400/70">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span>Coverage: 195 countries</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Advanced Features Section */}
+        <div className="max-w-7xl mx-auto px-4 mt-20 md:mt-32 mb-20">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
+              Advanced <span className="text-primary text-glow">Intelligence</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Real-time monitoring and AI-powered predictions for environmental events worldwide
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8">
+            <div className="animate-slide-in-left">
+              <SatelliteTracker />
+            </div>
+            <div className="animate-slide-in-right">
+              <AIPredictor />
+            </div>
+          </div>
+
+          <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <DataStreamMonitor />
+          </div>
+        </div>
+
+        {/* Technology Stack Section */}
+        <div className="max-w-7xl mx-auto px-4 mt-20 md:mt-32 mb-20">
+          <div className="glass-panel p-8 md:p-12 rounded-2xl animate-fade-in">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+                Powered by <span className="text-primary text-glow">Cutting-Edge Technology</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Enterprise-grade infrastructure processing petabytes of environmental data
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center p-6 rounded-xl bg-card/50 border border-border/50 hover:border-primary/30 transition-all group">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Satellite className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">Satellite Network</h3>
+                <p className="text-sm text-muted-foreground">12+ satellites • 180+ ground stations</p>
+                <div className="mt-4 h-2 bg-background/50 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-gradient-to-r from-primary to-green-400 animate-shimmer" />
+                </div>
+              </div>
+
+              <div className="text-center p-6 rounded-xl bg-card/50 border border-border/50 hover:border-purple-400/30 transition-all group">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500/30 to-purple-500/10 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Brain className="w-8 h-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">AI Processing</h3>
+                <p className="text-sm text-muted-foreground">GPT-4 Vision • Neural networks</p>
+                <div className="mt-4 h-2 bg-background/50 rounded-full overflow-hidden">
+                  <div className="h-full w-4/5 bg-gradient-to-r from-purple-500 to-pink-500 animate-shimmer" />
+                </div>
+              </div>
+
+              <div className="text-center p-6 rounded-xl bg-card/50 border border-border/50 hover:border-green-400/30 transition-all group">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500/30 to-green-500/10 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Activity className="w-8 h-8 text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">Real-time Processing</h3>
+                <p className="text-sm text-muted-foreground">10K+ data points/sec</p>
+                <div className="mt-4 h-2 bg-background/50 rounded-full overflow-hidden">
+                  <div className="h-full w-full bg-gradient-to-r from-green-500 to-emerald-500 animate-shimmer" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ import Navigation from "@/components/Navigation";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import InteractiveMap from "@/components/InteractiveMap";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
+import GlobalHeatmap from "@/components/GlobalHeatmap";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
 import { 
   Activity, TrendingUp, AlertTriangle, Cloud, 
   Download, RefreshCw, MapPin, Zap, PieChart as PieChartIcon, BarChart3 
@@ -192,9 +194,17 @@ const Dashboard = () => {
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="map">Global Map</TabsTrigger>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6"
+>
+              {/* New Advanced Sections */}
+              <div className="grid lg:grid-cols-2 gap-6 mb-6">
+                <GlobalHeatmap />
+                <PerformanceMonitor />
+              </div>
+
               {/* Charts Row 1 */}
               <div className="grid lg:grid-cols-2 gap-6 mb-6">
                 {/* Activity Trend */}
@@ -316,6 +326,13 @@ const Dashboard = () => {
 
             <TabsContent value="map">
               <InteractiveMap />
+            </TabsContent>
+
+            <TabsContent value="performance">
+              <div className="space-y-6">
+                <PerformanceMonitor />
+                <GlobalHeatmap />
+              </div>
             </TabsContent>
           </Tabs>
         </div>

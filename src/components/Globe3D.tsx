@@ -117,12 +117,23 @@ const AnimatedGlobe = () => {
   );
 };
 
-export const Globe3D = () => {
+export const Globe3D = ({ className = "" }: { className?: string }) => {
   return (
-    <div className="w-full h-full" style={{ touchAction: 'none' }}>
+    <div 
+      className={`w-full h-full ${className}`} 
+      style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+    >
       <Canvas 
         camera={{ position: [0, 0, 3.5], fov: 50 }}
         onPointerMissed={(e) => e.stopPropagation()}
+        gl={{ 
+          antialias: true, 
+          alpha: true,
+          powerPreference: 'high-performance'
+        }}
+        dpr={[1, 2]}
       >
         <Stars 
           radius={100} 
@@ -154,6 +165,10 @@ export const Globe3D = () => {
           enableDamping
           dampingFactor={0.05}
           makeDefault
+          touches={{
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+          }}
         />
       </Canvas>
     </div>
